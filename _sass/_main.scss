@@ -34,6 +34,9 @@ html {
 
 html,
 html[data-theme='light'] {
+  --text-font: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue',
+    Arial, 'Noto Sans', 'Liberation Sans', sans-serif, 'Apple Color Emoji',
+    'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   --source-code-font: Source Code Pro;
   --very-light-text-color: rgb(222, 222, 222);
   --light-text-color: rgb(89, 183, 255);
@@ -96,6 +99,9 @@ html[data-theme='light'] {
 }
 
 html[data-theme='dark'] {
+  --text-font: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue',
+    Arial, 'Noto Sans', 'Liberation Sans', sans-serif, 'Apple Color Emoji',
+    'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   --source-code-font: Source Code Pro;
   --very-light-text-color: #eee;
   --light-text-color: #c4bbf0;
@@ -157,6 +163,7 @@ html[data-theme='dark'] {
 }
 
 body {
+  font-family: var(--text-font);
   text-rendering: optimizeLegibility;
   line-height: 1.75;
   color: var(--main-text-color);
