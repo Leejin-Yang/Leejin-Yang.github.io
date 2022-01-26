@@ -19,7 +19,7 @@ author:
   email: ejin1996@gmail.com # email adress
 
 # Font Settings
-googlewebfonts:
+googlewebfonts: ''
 
 # URL settings
 url: 'https://leejin-yang.github.io' # Domain Name of host. [username].github.io for github pages
