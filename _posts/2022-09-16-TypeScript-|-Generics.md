@@ -6,6 +6,40 @@ summary: 타입스크립트 제네릭 개념과 사용 예시
 tags: typescript
 ---
 
+프로젝트를 TypeScript로 개발하면서 axios의 get response data 타입과 RTK의 PayloadAction에서 payload의 타입을 지정해주었다.
+
+문득 각각의 라이브러리는 어떻게 타입을 정의했기에 타입을 받아 사용할 수 있을지 궁금점이 생겼다.
+
+```tsx
+// axios.get()
+export interface DivisionMatchParams {
+  accessId: string
+  startMatchCount: number
+  nickname: string
+}
+
+export const getDivisionMatchApi = (params: DivisionMatchParams) =>
+  axios.get<DivisionMatchResponse>(`${BASE_URL}matches`, {
+    params: {
+      ...params,
+    },
+  })
+
+// RTK PayloadAction
+builder.addCase(
+  fetchOwnerInfo.fulfilled,
+  (state: OwnerState, action: PayloadAction<OwnerInfoResponse>) => {
+    state.loading = false
+    state.error = false
+    state.ownerInfo = action.payload
+  }
+)
+```
+
+제네릭의 개념을 정리하면서 각 함수와 타입이 어떻게 정의되어 있는지 알아보았다.
+
+<br>
+
 ## 제네릭이란?
 
 단일 타입이 아닌 다양한 타입에서 작동하는 컴포넌트를 생성하는데 사용된다. 제네릭을 통해 여러 타입의 컴포넌트나 자신만의 타입을 사용할 수 있다.
@@ -171,8 +205,6 @@ getProperty(x, 'm')
 
 ## Axios.get()
 
-axios를 이용하면서 get의 타입을 보고 제네릭에 대한 개념을 명확하게 잡고 싶어 정리했다.
-
 아래와 같이 타입 변수에 response에 대한 타입을 설정해주고 있다.
 
 ```tsx
@@ -260,6 +292,67 @@ config 타입 정의도 보면 params의 타입은 any로 지정된 것을 볼 �
 
 <br>
 
+## PayloadAction
+
+[createAsyncThunk](https://redux-toolkit.js.org/usage/usage-guide#async-requests-with-createasyncthunk)를 이용해 비동기 통신으로 데이터를 받아오고 받아오는 데이터의 타입을 payload의 타입으로 지정했다.
+
+```tsx
+builder.addCase(
+  fetchOwnerInfo.fulfilled,
+  (state: OwnerState, action: PayloadAction<OwnerInfoResponse>) => {
+    state.loading = false
+    state.error = false
+    state.ownerInfo = action.payload
+  }
+)
+```
+
+<br>
+
+[https://github.com/reduxjs/redux-toolkit/blob/master/packages/toolkit/src/createAction.ts](https://github.com/reduxjs/redux-toolkit/blob/master/packages/toolkit/src/createAction.ts)
+
+```tsx
+/**
+ * An action with a string type and an associated payload. This is the
+ * type of action returned by `createAction()` action creators.
+ *
+ * @template P The type of the action's payload.
+ * @template T the type used for the action type.
+ * @template M The type of the action's meta (optional)
+ * @template E The type of the action's error (optional)
+ *
+ * @public
+ */
+export type PayloadAction<
+  P = void,
+  T extends string = string,
+  M = never,
+  E = never
+> = {
+  payload: P
+  type: T
+} & ([M] extends [never]
+  ? {}
+  : {
+      meta: M
+    }) &
+  ([E] extends [never]
+    ? {}
+    : {
+        error: E
+      })
+```
+
+PayloadAction은 payload 프로퍼티의 타입을 지정할 수 있게 해주는 제네릭이다.
+
+meta와 error에 대해 아직 사용해보지 않아 위의 payload와 type만 보면, P에 OwnerInfoResponse 타입을 주면서 payload의 타입을 정한다.
+
+<br>
+
+_타입스크립트 컴파일러에서 올바르게 타입을 처리할 수 있게 제네릭을 사용한다._
+
+<br>
+
 ## Reference
 
 [https://www.typescriptlang.org/docs/handbook/2/generics.html](https://www.typescriptlang.org/docs/handbook/2/generics.html)
@@ -267,3 +360,7 @@ config 타입 정의도 보면 params의 타입은 any로 지정된 것을 볼 �
 [https://www.udemy.com/course/best-react/](https://www.udemy.com/course/best-react/)
 
 [https://www.youtube.com/watch?v=pReXmUBjU3E](https://www.youtube.com/watch?v=pReXmUBjU3E)
+
+[https://github.com/axios/axios](https://github.com/axios/axios)
+
+[https://redux-toolkit.js.org/usage/usage-guide](https://redux-toolkit.js.org/usage/usage-guide)
